@@ -1,15 +1,17 @@
-# hacker-tracker
+# Hacker Tracker
 
 Self-hosted app for alerts based on Hacker News posts and comments. Set up "trackers", which periodically alert you via email or Slack when keywords appear in content.
 
 ## Development
 
 **Setup**
+
 ```bash
 pnpm install
 ```
 
 **Run**
+
 ```bash
 # Frontend
 pnpm run frontend
@@ -22,6 +24,7 @@ pnpm run test:e2e
 ```
 
 **Project Structure**
+
 - `packages/frontend/` - React frontend with Tailwind CSS and Material UI
 - `packages/backend/` - Express API server and pg-boss worker
 - `packages/integration-test/` - Vitest integration tests with Supertest
@@ -30,6 +33,7 @@ pnpm run test:e2e
 ## Hosting
 
 There are several methods of hosting:
+
 1. Run via docker-compose
 2. Deploy to a k8s cluster (see skaffold configuration)
 3. Build the frontend/backend from source and host the bundles however you prefer
@@ -39,12 +43,13 @@ There are several methods of hosting:
 - Pnpm is used for package management
 - Vite is used for dev servers and production bundling
 
-The React frontend has several pages:
-- Splash page with some details about app features
-- Sign in/register modal
-- Tracking page, with a list of active trackers
-- Create tracker modal
-- Admin page with users, keywords, 
+The React frontend includes:
+
+- ✅ Splash page with app features and signup CTA (completed)
+- 🔄 Sign in/register modal (planned)
+- 🔄 Tracking page, with a list of active trackers (planned)
+- 🔄 Create tracker modal (planned)
+- 🔄 Admin page with users, keywords (planned)
 
 ### Frontend
 
