@@ -15,7 +15,14 @@ pnpm install
 pnpm run frontend
 # API & services
 pnpm run backend
+# Integration tests
+pnpm run test:integration
 ```
+
+**Project Structure**
+- `packages/frontend/` - React frontend with Tailwind CSS and Material UI
+- `packages/backend/` - Express API server and pg-boss worker
+- `packages/integration-tests/` - Vitest integration and Playwright UI tests
 
 ## Hosting
 

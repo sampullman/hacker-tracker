@@ -65,17 +65,15 @@ done < <(echo "$gh_ranges" | jq -r '(.web + .api + .git)[]' | aggregate -q)
 
 # Resolve and add other allowed domains
 for domain in \
-    "api.anthropic.com" \
     "registry.npmjs.org" \
-    "json.schemastore.org" \
-    ; do
+    "api.anthropic.com" ; do
     echo "Resolving $domain..."
     ips=$(dig +short A "$domain")
     if [ -z "$ips" ]; then
         echo "ERROR: Failed to resolve $domain"
         exit 1
     fi
-
+    
     while read -r ip; do
         if [[ ! "$ip" =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
             echo "ERROR: Invalid IP from DNS for $domain: $ip"
