@@ -1,5 +1,5 @@
 {
-  "name": "integration-tests",
+  "name": "integration-test",
   "version": "1.0.0",
   "type": "module",
   "scripts": {
@@ -15,7 +15,6 @@
   },
   "devDependencies": {
     "@types/node": "^20.10.5",
-    "@playwright/test": "^1.40.1",
     "vitest": "^1.1.0",
     "supertest": "^6.3.3",
     "@types/supertest": "^6.0.2"

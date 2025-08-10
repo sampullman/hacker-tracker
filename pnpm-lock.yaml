@@ -103,6 +103,22 @@ importers:
         specifier: ^1.1.0
         version: 1.6.1(@types/node@20.19.10)
 
+  packages/e2e-test:
+    dependencies:
+      backend:
+        specifier: workspace:*
+        version: link:../backend
+      frontend:
+        specifier: workspace:*
+        version: link:../frontend
+    devDependencies:
+      '@playwright/test':
+        specifier: ^1.40.1
+        version: 1.54.2
+      '@types/node':
+        specifier: ^20.10.5
+        version: 20.19.10
+
   packages/frontend:
     dependencies:
       '@emotion/react':
@@ -149,7 +165,7 @@ importers:
         specifier: ^5.0.8
         version: 5.4.19(@types/node@20.19.10)
 
-  packages/integration-tests:
+  packages/integration-test:
     dependencies:
       backend:
         specifier: workspace:*
@@ -158,9 +174,6 @@ importers:
         specifier: workspace:*
         version: link:../frontend
     devDependencies:
-      '@playwright/test':
-        specifier: ^1.40.1
-        version: 1.54.2
       '@types/node':
         specifier: ^20.10.5
         version: 20.19.10

@@ -9,7 +9,8 @@
     "backend": "pnpm --filter backend dev",
     "build": "pnpm -r build",
     "test": "pnpm -r test",
-    "test:integration": "pnpm --filter integration-tests test",
+    "test:integration": "pnpm --filter integration-test test",
+    "test:e2e": "pnpm --filter e2e-test test",
     "lint": "pnpm -r lint",
     "typecheck": "pnpm -r typecheck"
   },
