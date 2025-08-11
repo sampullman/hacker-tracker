@@ -5,7 +5,7 @@ ENV TZ="$TZ"
 
 ARG CLAUDE_CODE_VERSION=latest
 
-# Install basic development tools and iptables/ipset
+# Install basic development tools, postgres, and debugging tools
 RUN apt-get update && apt-get install -y --no-install-recommends \
   less \
   git \
@@ -24,7 +24,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   aggregate \
   jq \
   nano \
-  vim \
+  postgresql \
+  postgresql-contrib \
+  postgresql-client \
   && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Ensure default node user has access to /usr/local/share
@@ -78,14 +80,34 @@ RUN sh -c "$(wget -O- https://github.com/deluan/zsh-in-docker/releases/download/
   -a "export PROMPT_COMMAND='history -a' && export HISTFILE=/commandhistory/.bash_history" \
   -x
 
+# Install PNPM globally
+RUN npm install -g pnpm@8.15.1
+
 # Install Claude
 RUN npm install -g @anthropic-ai/claude-code@${CLAUDE_CODE_VERSION}
 
 
+# Set up PostgreSQL for local development
+USER root
+RUN mkdir -p /var/lib/postgresql/data && \
+  chown -R postgres:postgres /var/lib/postgresql && \
+  mkdir -p /run/postgresql && \
+  chown -R postgres:postgres /run/postgresql
+
+# Initialize PostgreSQL
+USER postgres
+RUN /usr/lib/postgresql/*/bin/initdb -D /var/lib/postgresql/data
+RUN echo "host all all 127.0.0.1/32 trust" >> /var/lib/postgresql/data/pg_hba.conf
+RUN echo "local all all trust" >> /var/lib/postgresql/data/pg_hba.conf
+
+# Create startup script for postgres
+USER root
+RUN echo '#!/bin/bash\nsu - postgres -c "/usr/lib/postgresql/*/bin/pg_ctl -D /var/lib/postgresql/data -l /var/lib/postgresql/data/logfile start"\nsleep 2\nsu - postgres -c "createdb hacker_tracker" 2>/dev/null || true' > /usr/local/bin/start-postgres.sh && \
+  chmod +x /usr/local/bin/start-postgres.sh
+
 # Copy and set up firewall script
 COPY init-firewall.sh /usr/local/bin/
-USER root
 RUN chmod +x /usr/local/bin/init-firewall.sh && \
-  echo "node ALL=(root) NOPASSWD: /usr/local/bin/init-firewall.sh" > /etc/sudoers.d/node-firewall && \
+  echo "node ALL=(root) NOPASSWD: /usr/local/bin/init-firewall.sh, /usr/local/bin/start-postgres.sh" > /etc/sudoers.d/node-firewall && \
   chmod 0440 /etc/sudoers.d/node-firewall
 USER node

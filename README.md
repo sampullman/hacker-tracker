@@ -45,11 +45,11 @@ There are several methods of hosting:
 
 The React frontend includes:
 
-- ✅ Splash page with app features and signup CTA (completed)
-- 🔄 Sign in/register modal (planned)
-- 🔄 Tracking page, with a list of active trackers (planned)
-- 🔄 Create tracker modal (planned)
-- 🔄 Admin page with users, keywords (planned)
+- ✅ Splash page with app features and signup CTA
+- 🔄 Sign in/register modal
+- 🔄 Tracking page, with a list of active trackers
+- 🔄 Create tracker modal
+- 🔄 Admin page with users, keywords
 
 ### Frontend
 
