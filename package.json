@@ -5,7 +5,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "pnpm run db:up && pnpm run db:setup && concurrently \"pnpm run frontend\" \"pnpm run backend\"",
+    "dev": "pnpm run db:setup && concurrently \"pnpm run frontend\" \"pnpm run backend\"",
     "frontend": "pnpm --filter frontend dev",
     "backend": "pnpm --filter backend dev",
     "build": "pnpm --filter shared-types build && pnpm -r build",
@@ -16,13 +16,15 @@
     "typecheck": "pnpm --filter shared-types typecheck && pnpm -r typecheck",
     "db:up": "docker compose -f docker-compose.dev.yml up -d postgres postgres_test",
     "db:down": "docker compose -f docker-compose.dev.yml down",
-    "db:setup": "pnpm --filter migrations db:setup",
-    "db:reset": "pnpm --filter migrations db:reset",
+    "db:setup": "pnpm run db:init && pnpm --filter migrations db:setup && pnpm run db:init:test && pnpm --filter migrations db:setup:test",
+    "db:reset": "pnpm run db:init && pnpm --filter migrations db:reset && pnpm run db:init:test && pnpm --filter migrations db:reset:test",
     "db:migrate": "pnpm --filter migrations migration:run",
     "db:migrate:revert": "pnpm --filter migrations migration:revert",
+    "db:init": "psql -U postgres -f scripts/init-db.sql",
+    "db:init:test": "psql -U postgres -f scripts/init-test-db.sql",
     "migration:generate": "pnpm --filter migrations migration:generate",
     "migration:create": "pnpm --filter migrations migration:create",
-    "setup": "pnpm install && pnpm run build && pnpm run db:up && pnpm run db:setup"
+    "setup": "pnpm install && pnpm run build && pnpm run db:setup"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^6.21.0",
