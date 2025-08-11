@@ -35,11 +35,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'signup' }: AuthModalProps) 
 
   // Reset form when modal closes or mode changes
   const resetForm = () => {
-    setFormData({
-      email: '',
-      password: '',
-      confirmPassword: ''
-    })
+    setFormData({ email: '', password: '', confirmPassword: '' })
     setErrors({})
     setIsLoading(false)
   }
@@ -50,16 +46,9 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'signup' }: AuthModalProps) 
   }
 
   const handleInputChange = (field: keyof FormData) => (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: e.target.value
-    }))
-    // Clear error when user starts typing
+    setFormData(prev => ({ ...prev, [field]: e.target.value }))
     if (errors[field]) {
-      setErrors(prev => ({
-        ...prev,
-        [field]: ''
-      }))
+      setErrors(prev => ({ ...prev, [field]: '' }))
     }
   }
 
@@ -98,22 +87,14 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'signup' }: AuthModalProps) 
     setIsLoading(true)
     
     try {
-      const credentials = {
-        email: formData.email,
-        password: formData.password,
-      }
-
+      const credentials = { email: formData.email, password: formData.password }
       const response = mode === 'signup' 
         ? await api.auth.signup(credentials)
         : await api.auth.signin(credentials)
 
       if (response.success && response.token) {
-        // Store the authentication token
         api.token.setToken(response.token)
-        
         console.log(`${mode} successful:`, response.user)
-        
-        // On success, close modal and reset
         onClose()
         resetForm()
       } else {
@@ -135,10 +116,13 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'signup' }: AuthModalProps) 
     onClose()
   }
 
+  const inputClass = "w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-colors"
+  const labelClass = "block text-sm font-medium text-gray-300 mb-2"
+  const errorClass = "text-red-400 text-sm mt-1"
+
   return (
     <Modal isOpen={isOpen} onClose={handleClose}>
       <div className="p-8">
-        {/* Header */}
         <div className="text-center mb-6">
           <div className="flex items-center justify-center mb-4">
             <div className="w-12 h-12 bg-orange-500 rounded-lg flex items-center justify-center">
@@ -159,14 +143,10 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'signup' }: AuthModalProps) 
             {mode === 'signup' ? 'Join Hacker Tracker' : 'Welcome Back'}
           </h2>
           <p className="text-gray-300">
-            {mode === 'signup' 
-              ? 'Start tracking your keywords for free' 
-              : 'Sign in to your account'
-            }
+            {mode === 'signup' ? 'Start tracking your keywords for free' : 'Sign in to your account'}
           </p>
         </div>
 
-        {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           {errors.general && (
             <div className="bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-lg text-sm">
@@ -174,66 +154,50 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'signup' }: AuthModalProps) 
             </div>
           )}
 
-          {/* Email Field */}
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
-              Email Address
-            </label>
+            <label htmlFor="email" className={labelClass}>Email Address</label>
             <input
               type="email"
               id="email"
               value={formData.email}
               onChange={handleInputChange('email')}
-              className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-colors"
+              className={inputClass}
               placeholder="Enter your email"
               disabled={isLoading}
             />
-            {errors.email && (
-              <p className="text-red-400 text-sm mt-1">{errors.email}</p>
-            )}
+            {errors.email && <p className={errorClass}>{errors.email}</p>}
           </div>
 
-          {/* Password Field */}
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-2">
-              Password
-            </label>
+            <label htmlFor="password" className={labelClass}>Password</label>
             <input
               type="password"
               id="password"
               value={formData.password}
               onChange={handleInputChange('password')}
-              className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-colors"
+              className={inputClass}
               placeholder="Enter your password"
               disabled={isLoading}
             />
-            {errors.password && (
-              <p className="text-red-400 text-sm mt-1">{errors.password}</p>
-            )}
+            {errors.password && <p className={errorClass}>{errors.password}</p>}
           </div>
 
-          {/* Confirm Password Field (Signup only) */}
           {mode === 'signup' && (
             <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-300 mb-2">
-                Confirm Password
-              </label>
+              <label htmlFor="confirmPassword" className={labelClass}>Confirm Password</label>
               <input
                 type="password"
                 id="confirmPassword"
                 value={formData.confirmPassword || ''}
                 onChange={handleInputChange('confirmPassword')}
-                className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-colors"
+                className={inputClass}
                 placeholder="Confirm your password"
                 disabled={isLoading}
               />
-              {errors.confirmPassword && (
-                <p className="text-red-400 text-sm mt-1">{errors.confirmPassword}</p>
-              )}
+              {errors.confirmPassword && <p className={errorClass}>{errors.confirmPassword}</p>}
             </div>
           )}
 
-          {/* Submit Button */}
           <button
             type="submit"
             disabled={isLoading}
@@ -253,7 +217,6 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'signup' }: AuthModalProps) 
           </button>
         </form>
 
-        {/* Mode Toggle */}
         <div className="mt-6 text-center">
           <p className="text-gray-400 text-sm">
             {mode === 'signup' ? 'Already have an account?' : "Don't have an account?"}{' '}

@@ -19,21 +19,19 @@ const SplashPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-slate-900 flex flex-col items-center justify-center text-white overflow-hidden">
-      {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-orange-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse-slow"></div>
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-orange-500 rounded-full mix-blend-multiply blur-xl opacity-20 animate-pulse-slow"></div>
         <div
-          className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse-slow"
+          className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-500 rounded-full mix-blend-multiply blur-xl opacity-20 animate-pulse-slow"
           style={{ animationDelay: "1s" }}
         ></div>
         <div
-          className="absolute top-40 left-1/2 transform -translate-x-1/2 w-60 h-60 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse-slow"
+          className="absolute top-40 left-1/2 -translate-x-1/2 w-60 h-60 bg-purple-500 rounded-full mix-blend-multiply blur-xl opacity-20 animate-pulse-slow"
           style={{ animationDelay: "2s" }}
         ></div>
       </div>
 
       <div className="relative z-10 max-w-4xl mx-auto px-6 text-center">
-        {/* Header */}
         <div className="mb-12">
           <div className="flex items-center justify-center mb-4">
             <div className="w-16 h-16 bg-orange-500 rounded-lg flex items-center justify-center mr-4">
@@ -62,7 +60,6 @@ const SplashPage = () => {
           </p>
         </div>
 
-        {/* Description */}
         <div className="mb-12">
           <p className="text-lg md:text-xl text-gray-200 leading-relaxed mb-8 max-w-xl mx-auto">
             Get notified when your keywords appear in posts or comments. Stay
@@ -70,7 +67,6 @@ const SplashPage = () => {
           </p>
         </div>
 
-        {/* Features Grid */}
         <div className="grid md:grid-cols-3 gap-6 mb-12">
           <FeatureCard
             icon={
@@ -122,7 +118,6 @@ const SplashPage = () => {
           />
         </div>
 
-        {/* CTA Section */}
         <div className="animate-slide-up" style={{ animationDelay: "1s" }}>
           <p className="text-sm text-gray-400">
             Track up to 5 keywords for free • No credit card required
@@ -138,7 +133,6 @@ const SplashPage = () => {
         </div>
       </div>
 
-      {/* Auth Modal */}
       <AuthModal
         isOpen={isAuthModalOpen}
         onClose={() => setIsAuthModalOpen(false)}

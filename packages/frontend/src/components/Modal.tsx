@@ -8,17 +8,13 @@ interface ModalProps {
 }
 
 const Modal = ({ isOpen, onClose, children, className = '' }: ModalProps) => {
-  // Handle escape key press
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        onClose()
-      }
+      if (e.key === 'Escape') onClose()
     }
 
     if (isOpen) {
       document.addEventListener('keydown', handleEscape)
-      // Prevent body scroll when modal is open
       document.body.style.overflow = 'hidden'
     }
 
@@ -32,15 +28,11 @@ const Modal = ({ isOpen, onClose, children, className = '' }: ModalProps) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
-      {/* Backdrop */}
       <div 
         className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-fade-in"
         onClick={onClose}
       />
-      
-      {/* Modal content */}
       <div className={`relative bg-slate-800 rounded-xl shadow-2xl animate-slide-up max-w-md w-full mx-4 ${className}`}>
-        {/* Close button */}
         <button
           onClick={onClose}
           className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors duration-200"
@@ -50,7 +42,6 @@ const Modal = ({ isOpen, onClose, children, className = '' }: ModalProps) => {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
-        
         {children}
       </div>
     </div>

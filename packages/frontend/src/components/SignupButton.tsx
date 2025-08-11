@@ -7,21 +7,14 @@ interface SignupButtonProps {
 const SignupButton = ({ onClick }: SignupButtonProps) => {
   const [isHovered, setIsHovered] = useState(false);
 
-  const handleSignup = () => {
-    onClick();
-  };
-
   return (
     <button
-      onClick={handleSignup}
+      onClick={onClick}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       className="group relative bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold py-4 px-8 rounded-xl text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl focus:outline-none focus:ring-4 focus:ring-orange-500/50 mt-4"
     >
-      {/* Button glow effect */}
       <div className="absolute -inset-1 bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl blur opacity-30 group-hover:opacity-60 transition duration-300"></div>
-
-      {/* Button content */}
       <div className="relative flex items-center justify-center space-x-2">
         <span>Start Tracking</span>
         <svg
