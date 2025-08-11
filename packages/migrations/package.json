@@ -1,0 +1,30 @@
+{
+  "name": "migrations",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "migration:generate": "typeorm-ts-node-esm migration:generate -d src/data-source.ts",
+    "migration:create": "typeorm-ts-node-esm migration:create",
+    "migration:run": "typeorm-ts-node-esm migration:run -d src/data-source.ts",
+    "migration:revert": "typeorm-ts-node-esm migration:revert -d src/data-source.ts",
+    "migration:show": "typeorm-ts-node-esm migration:show -d src/data-source.ts",
+    "schema:drop": "typeorm-ts-node-esm schema:drop -d src/data-source.ts",
+    "schema:sync": "typeorm-ts-node-esm schema:sync -d src/data-source.ts",
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "db:reset": "pnpm run schema:drop && pnpm run migration:run",
+    "db:setup": "pnpm run migration:run"
+  },
+  "dependencies": {
+    "typeorm": "^0.3.17",
+    "pg": "^8.11.3",
+    "dotenv": "^16.3.1",
+    "shared-types": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/pg": "^8.10.9",
+    "@types/node": "^20.10.5",
+    "typescript": "^5.3.3",
+    "ts-node": "^10.9.2"
+  }
+}

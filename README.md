@@ -4,31 +4,83 @@ Self-hosted app for alerts based on Hacker News posts and comments. Set up "trac
 
 ## Development
 
-**Setup**
+**Quick Setup**
 
 ```bash
+# 1. Install dependencies
 pnpm install
+
+# 2. Setup everything (builds packages, starts databases, runs migrations)
+pnpm run setup
+
+# 3. Start development servers
+pnpm run dev
 ```
 
-**Run**
+**Manual Setup**
 
 ```bash
-# Frontend
+# Install dependencies
+pnpm install
+
+# Build shared packages first
+pnpm run build
+
+# Start PostgreSQL databases (dev + test)
+pnpm run db:up
+
+# Run database migrations
+pnpm run db:setup
+
+# Start development servers (frontend + backend)
+pnpm run dev
+```
+
+**Individual Commands**
+
+```bash
+# Frontend only
 pnpm run frontend
-# API & services
+
+# Backend only
 pnpm run backend
-# Integration tests
-pnpm run test:integration
-# E2E tests
-pnpm run test:e2e
+
+# Database management
+pnpm run db:up          # Start PostgreSQL containers
+pnpm run db:down        # Stop PostgreSQL containers
+pnpm run db:setup       # Run migrations
+pnpm run db:reset       # Drop schema and re-run migrations
+
+# Database migrations
+pnpm migration:create   # Create new migration
+pnpm migration:generate # Generate migration from entity changes
+pnpm run db:migrate     # Run pending migrations
+pnpm run db:migrate:revert # Revert last migration
+
+# Testing
+pnpm run test:integration # Database integration tests
+pnpm run test:e2e        # E2E UI tests
+pnpm test               # All tests
+
+# Code quality
+pnpm run lint           # Lint all packages
+pnpm run typecheck      # TypeScript type checking
 ```
 
 **Project Structure**
 
 - `packages/frontend/` - React frontend with Tailwind CSS and Material UI
-- `packages/backend/` - Express API server and pg-boss worker
+- `packages/backend/` - Express API server with TypeORM
+- `packages/shared-types/` - TypeScript types shared across packages
+- `packages/migrations/` - TypeORM database migrations and entities
 - `packages/integration-test/` - Vitest integration tests with Supertest
 - `packages/e2e-test/` - Playwright end-to-end UI tests
+
+**Database**
+
+- Development: `hacker_tracker_dev` on port 5432
+- Test: `hacker_tracker_test` on port 5433
+- Both run in Docker containers via `docker-compose.dev.yml`
 
 ## Hosting
 
