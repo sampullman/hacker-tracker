@@ -1,8 +1,22 @@
 import { useState } from "react";
 import SignupButton from "./SignupButton";
 import FeatureCard from "./FeatureCard";
+import AuthModal from "./AuthModal";
 
 const SplashPage = () => {
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [authMode, setAuthMode] = useState<"signup" | "login">("signup");
+
+  const handleSignupClick = () => {
+    setAuthMode("signup");
+    setIsAuthModalOpen(true);
+  };
+
+  const handleLoginClick = () => {
+    setAuthMode("login");
+    setIsAuthModalOpen(true);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-slate-900 flex flex-col items-center justify-center text-white overflow-hidden">
       {/* Animated background elements */}
@@ -110,13 +124,26 @@ const SplashPage = () => {
 
         {/* CTA Section */}
         <div className="animate-slide-up" style={{ animationDelay: "1s" }}>
-          <SignupButton />
-
-          <p className="text-sm text-gray-400 mt-4">
+          <p className="text-sm text-gray-400">
             Track up to 5 keywords for free • No credit card required
           </p>
+          <SignupButton onClick={handleSignupClick} />
+
+          <button
+            onClick={handleLoginClick}
+            className="text-sm text-gray-400 hover:text-orange-400 transition-colors underline mt-4 block mx-auto"
+          >
+            Log in
+          </button>
         </div>
       </div>
+
+      {/* Auth Modal */}
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+        initialMode={authMode}
+      />
     </div>
   );
 };

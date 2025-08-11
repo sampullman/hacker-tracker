@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import SplashPage from './components/SplashPage'
 
 function App() {

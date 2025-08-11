@@ -7,8 +7,8 @@ export default {
   theme: {
     extend: {
       animation: {
-        'fade-in': 'fadeIn 0.8s ease-in-out',
-        'slide-up': 'slideUp 0.8s ease-out',
+        'fade-in': 'fadeIn 0.4s ease-in-out',
+        'slide-up': 'slideUp 0.4s ease-out',
         'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
       },
       keyframes: {
