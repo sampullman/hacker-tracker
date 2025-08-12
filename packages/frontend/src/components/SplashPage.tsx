@@ -1,3 +1,4 @@
+import { useState } from "react";
 import SignupButton from "./SignupButton";
 import FeatureCard from "./FeatureCard";
 import AuthModal from "./AuthModal";
