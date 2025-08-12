@@ -1,0 +1,82 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: hacker-tracker-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: hacker_tracker
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5440:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d hacker_tracker"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - hacker-tracker
+
+  migrations:
+    build:
+      context: .
+      dockerfile: packages/migrations/Dockerfile
+    container_name: hacker-tracker-migrations
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5440
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: hacker_tracker
+    networks:
+      - hacker-tracker
+    volumes:
+      - ./packages/migrations:/app
+    working_dir: /app
+    command: ["pnpm", "run", "migration:run"]
+
+  backend:
+    build:
+      context: .
+      dockerfile: packages/backend/Dockerfile
+    container_name: hacker-tracker-api
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migrations:
+        condition: service_completed_successfully
+    ports:
+      - "3001:3001"
+    environment:
+      NODE_ENV: production
+      PORT: 3001
+      DB_HOST: postgres
+      DB_PORT: 5440
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: hacker_tracker
+      JWT_SECRET: your-super-secret-jwt-key-change-in-production
+      JWT_EXPIRES_IN: 7d
+      BCRYPT_ROUNDS: 12
+    networks:
+      - hacker-tracker
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://127.0.0.1:3001/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  postgres_data:
+
+networks:
+  hacker-tracker:
+    driver: bridge

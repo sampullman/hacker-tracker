@@ -78,17 +78,66 @@ pnpm run typecheck      # TypeScript type checking
 
 **Database**
 
-- Development: `hacker_tracker_dev` on port 5432
-- Test: `hacker_tracker_test` on port 5433
+- Development: `hacker_tracker` on port 5440
 - Both run in Docker containers via `docker-compose.dev.yml`
 
-## Hosting
+## Docker Deployment
 
-There are several methods of hosting:
+### Production (Full Stack)
+```bash
+# Run complete application stack
+docker-compose up -d
 
-1. Run via docker-compose
-2. Deploy to a k8s cluster (see skaffold configuration)
-3. Build the frontend/backend from source and host the bundles however you prefer
+# View logs
+docker-compose logs -f
+
+# Stop services
+docker-compose down
+```
+
+### Development with Docker
+```bash
+# Start only databases
+docker-compose -f docker-compose.dev.yml up -d
+
+# Run migrations
+pnpm run db:setup
+
+# Start development servers
+pnpm run dev
+```
+
+## Configuration
+
+Copy the environment template and customize:
+```bash
+cp .env.example .env
+```
+
+Key settings:
+- `JWT_SECRET`: Change for production (use secure random string)
+- `DB_*`: Database connection settings
+- `BCRYPT_ROUNDS`: Password hashing strength (10-12 for production)
+
+## API Documentation
+
+### Authentication Endpoints
+- `POST /api/auth/register` - Create user account
+- `POST /api/auth/login` - Authenticate user
+- `GET /api/auth/me` - Get current user
+- `POST /api/auth/logout` - Logout user
+
+### User Management (Admin/Self only)  
+- `GET /api/users` - List users (admin only)
+- `GET /api/users/:id` - Get user details
+- `PUT /api/users/:id` - Update user
+- `DELETE /api/users/:id` - Delete user (admin only)
+
+## Hosting Options
+
+1. **Docker Compose** (recommended): Use included docker-compose.yml
+2. **Container Orchestration**: Deploy to Kubernetes/Docker Swarm
+3. **Manual Build**: Build packages and deploy to your infrastructure
 
 ## Tech
 

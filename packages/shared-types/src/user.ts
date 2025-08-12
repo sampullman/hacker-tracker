@@ -1,7 +1,14 @@
+export enum UserRole {
+  USER = 'user',
+  ADMIN = 'admin'
+}
+
 export interface User {
   id: string;
   email: string;
   username: string;
+  emailConfirmed: boolean;
+  role: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -18,6 +25,6 @@ export interface LoginRequest {
 }
 
 export interface AuthResponse {
-  user: Omit<User, 'password'>;
+  user: Omit<User, 'passwordHash'>;
   token: string;
 }

@@ -25,7 +25,9 @@ describe('User Entity Integration Tests', () => {
     const userData = {
       email: 'test@example.com',
       username: 'testuser',
-      passwordHash: 'hashedpassword123'
+      passwordHash: 'hashedpassword123',
+      emailConfirmed: false,
+      role: 'user' as const
     };
 
     const user = userRepository.create(userData);
@@ -35,6 +37,8 @@ describe('User Entity Integration Tests', () => {
     expect(savedUser.email).toBe(userData.email);
     expect(savedUser.username).toBe(userData.username);
     expect(savedUser.passwordHash).toBe(userData.passwordHash);
+    expect(savedUser.emailConfirmed).toBe(false);
+    expect(savedUser.role).toBe('user');
     expect(savedUser.createdAt).toBeInstanceOf(Date);
     expect(savedUser.updatedAt).toBeInstanceOf(Date);
   });
@@ -43,7 +47,9 @@ describe('User Entity Integration Tests', () => {
     const userData = {
       email: 'findme@example.com',
       username: 'finduser',
-      passwordHash: 'hashedpassword123'
+      passwordHash: 'hashedpassword123',
+      emailConfirmed: false,
+      role: 'user' as const
     };
 
     const user = userRepository.create(userData);
@@ -56,13 +62,17 @@ describe('User Entity Integration Tests', () => {
     expect(foundUser).toBeDefined();
     expect(foundUser?.email).toBe(userData.email);
     expect(foundUser?.username).toBe(userData.username);
+    expect(foundUser?.emailConfirmed).toBe(false);
+    expect(foundUser?.role).toBe('user');
   });
 
   it('should find user by username', async () => {
     const userData = {
       email: 'findbyusername@example.com',
       username: 'uniqueuser',
-      passwordHash: 'hashedpassword123'
+      passwordHash: 'hashedpassword123',
+      emailConfirmed: false,
+      role: 'user' as const
     };
 
     const user = userRepository.create(userData);
@@ -75,19 +85,25 @@ describe('User Entity Integration Tests', () => {
     expect(foundUser).toBeDefined();
     expect(foundUser?.email).toBe(userData.email);
     expect(foundUser?.username).toBe(userData.username);
+    expect(foundUser?.emailConfirmed).toBe(false);
+    expect(foundUser?.role).toBe('user');
   });
 
   it('should enforce unique email constraint', async () => {
     const userData1 = {
       email: 'duplicate@example.com',
       username: 'user1',
-      passwordHash: 'hashedpassword123'
+      passwordHash: 'hashedpassword123',
+      emailConfirmed: false,
+      role: 'user' as const
     };
 
     const userData2 = {
       email: 'duplicate@example.com',
       username: 'user2',
-      passwordHash: 'hashedpassword123'
+      passwordHash: 'hashedpassword123',
+      emailConfirmed: false,
+      role: 'user' as const
     };
 
     const user1 = userRepository.create(userData1);
@@ -102,13 +118,17 @@ describe('User Entity Integration Tests', () => {
     const userData1 = {
       email: 'user1@example.com',
       username: 'duplicateuser',
-      passwordHash: 'hashedpassword123'
+      passwordHash: 'hashedpassword123',
+      emailConfirmed: false,
+      role: 'user' as const
     };
 
     const userData2 = {
       email: 'user2@example.com',
       username: 'duplicateuser',
-      passwordHash: 'hashedpassword123'
+      passwordHash: 'hashedpassword123',
+      emailConfirmed: false,
+      role: 'user' as const
     };
 
     const user1 = userRepository.create(userData1);
@@ -123,7 +143,9 @@ describe('User Entity Integration Tests', () => {
     const userData = {
       email: 'timestamp@example.com',
       username: 'timestampuser',
-      passwordHash: 'hashedpassword123'
+      passwordHash: 'hashedpassword123',
+      emailConfirmed: false,
+      role: 'user' as const
     };
 
     const user = userRepository.create(userData);
@@ -144,7 +166,9 @@ describe('User Entity Integration Tests', () => {
     const userData = {
       email: 'deleteme@example.com',
       username: 'deleteuser',
-      passwordHash: 'hashedpassword123'
+      passwordHash: 'hashedpassword123',
+      emailConfirmed: false,
+      role: 'user' as const
     };
 
     const user = userRepository.create(userData);
@@ -161,9 +185,9 @@ describe('User Entity Integration Tests', () => {
 
   it('should count users', async () => {
     const users = [
-      { email: 'count1@example.com', username: 'countuser1', passwordHash: 'hash1' },
-      { email: 'count2@example.com', username: 'countuser2', passwordHash: 'hash2' },
-      { email: 'count3@example.com', username: 'countuser3', passwordHash: 'hash3' }
+      { email: 'count1@example.com', username: 'countuser1', passwordHash: 'hash1', emailConfirmed: false, role: 'user' as const },
+      { email: 'count2@example.com', username: 'countuser2', passwordHash: 'hash2', emailConfirmed: false, role: 'user' as const },
+      { email: 'count3@example.com', username: 'countuser3', passwordHash: 'hash3', emailConfirmed: true, role: 'admin' as const }
     ];
 
     for (const userData of users) {

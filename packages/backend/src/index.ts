@@ -55,8 +55,8 @@ async function startServer() {
     const app = await createApp();
     const port = config.server.port;
     
-    app.listen(port, () => {
-      console.log(`Server running on port ${port}`);
+    app.listen(port, '127.0.0.1', () => {
+      console.log(`Server running on 127.0.0.1:${port}`);
     });
   } catch (error) {
     console.error('Failed to start server:', error);
