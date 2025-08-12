@@ -4,8 +4,48 @@ Self-hosted app for alerts based on Hacker News posts and comments. Set up "trac
 
 ## Development
 
-**Quick Setup**
+### Local Environment (No Docker)
 
+**Prerequisites:** PostgreSQL must be installed and running locally.
+
+**Quick Setup**
+```bash
+# 1. Install dependencies
+pnpm install
+
+# 2. Setup database (create databases and run migrations)
+# Note: Requires local PostgreSQL instance
+PGPASSWORD=your_password psql -h localhost -p 5432 -U postgres -f scripts/init-db.sql
+pnpm --filter migrations db:setup
+
+# 3. Build shared packages
+pnpm run build
+
+# 4. Start development servers
+pnpm run frontend & pnpm run backend
+```
+
+**Manual Local Setup**
+```bash
+# Install dependencies
+pnpm install
+
+# Build shared packages first
+pnpm run build
+
+# Setup local databases (requires PostgreSQL running locally)
+PGPASSWORD=your_password psql -h localhost -p 5432 -U postgres -f scripts/init-db.sql
+
+# Run database migrations
+pnpm --filter migrations db:setup
+
+# Start development servers
+pnpm run frontend & pnpm run backend
+```
+
+### Docker Environment
+
+**Quick Docker Setup**
 ```bash
 # 1. Install dependencies
 pnpm install
@@ -17,8 +57,7 @@ pnpm run setup
 pnpm run dev
 ```
 
-**Manual Setup**
-
+**Manual Docker Setup**
 ```bash
 # Install dependencies
 pnpm install
@@ -81,9 +120,9 @@ pnpm run typecheck      # TypeScript type checking
 - Development: `hacker_tracker` on port 5440
 - Both run in Docker containers via `docker-compose.dev.yml`
 
-## Docker Deployment
+## Production Deployment
 
-### Production (Full Stack)
+### Docker Compose (Recommended)
 ```bash
 # Run complete application stack
 docker-compose up -d
@@ -93,18 +132,6 @@ docker-compose logs -f
 
 # Stop services
 docker-compose down
-```
-
-### Development with Docker
-```bash
-# Start only databases
-docker-compose -f docker-compose.dev.yml up -d
-
-# Run migrations
-pnpm run db:setup
-
-# Start development servers
-pnpm run dev
 ```
 
 ## Configuration
