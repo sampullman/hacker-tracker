@@ -1,28 +1,7 @@
+import type { AuthResponse, CreateUserRequest, LoginRequest, ApiResponse, User, ApiError } from 'shared-types'
+
 // API configuration
 const API_BASE_URL = import.meta.env.VITE_API_URL || '/api'
-
-// Types
-export interface AuthRequest {
-  email: string
-  password: string
-}
-
-export interface AuthResponse {
-  success: boolean
-  user?: {
-    id: string
-    email: string
-    name?: string
-  }
-  token?: string
-  message?: string
-}
-
-export interface ApiError {
-  message: string
-  status?: number
-  code?: string
-}
 
 // Base fetch wrapper with error handling
 async function apiRequest<T>(
@@ -55,9 +34,9 @@ async function apiRequest<T>(
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}))
       throw {
-        message: errorData.message || `HTTP ${response.status}: ${response.statusText}`,
+        message: errorData.error || errorData.message || `HTTP ${response.status}: ${response.statusText}`,
         status: response.status,
-        code: errorData.code,
+        code: errorData.code || 'API_ERROR',
       } as ApiError
     }
 
@@ -80,50 +59,77 @@ export const authApi = {
   /**
    * Sign up a new user
    */
-  async signup(credentials: AuthRequest): Promise<AuthResponse> {
-    return apiRequest<AuthResponse>('/auth/signup', {
+  async signup(userData: { email: string; password: string; username?: string }): Promise<{ success: boolean; user?: User; token?: string; message?: string }> {
+    const requestData: CreateUserRequest = {
+      email: userData.email,
+      username: userData.username || userData.email.split('@')[0],
+      password: userData.password
+    }
+    
+    const response = await apiRequest<ApiResponse<AuthResponse>>('/auth/register', {
       method: 'POST',
-      body: JSON.stringify(credentials),
+      body: JSON.stringify(requestData),
     })
+
+    if (response.data) {
+      return {
+        success: true,
+        user: response.data.user,
+        token: response.data.token
+      }
+    } else {
+      return {
+        success: false,
+        message: response.error || 'Registration failed'
+      }
+    }
   },
 
   /**
    * Sign in an existing user
    */
-  async signin(credentials: AuthRequest): Promise<AuthResponse> {
-    return apiRequest<AuthResponse>('/auth/signin', {
+  async signin(credentials: LoginRequest): Promise<{ success: boolean; user?: User; token?: string; message?: string }> {
+    const response = await apiRequest<ApiResponse<AuthResponse>>('/auth/login', {
       method: 'POST',
       body: JSON.stringify(credentials),
     })
+
+    if (response.data) {
+      return {
+        success: true,
+        user: response.data.user,
+        token: response.data.token
+      }
+    } else {
+      return {
+        success: false,
+        message: response.error || 'Login failed'
+      }
+    }
   },
 
   /**
    * Sign out the current user
    */
   async signout(): Promise<{ success: boolean }> {
-    const result = await apiRequest<{ success: boolean }>('/auth/signout', {
+    await apiRequest<ApiResponse>('/auth/logout', {
       method: 'POST',
     })
     
     // Clear local token on successful signout
     localStorage.removeItem('auth_token')
-    return result
+    return { success: true }
   },
 
   /**
    * Get current user profile
    */
-  async getProfile(): Promise<AuthResponse['user']> {
-    return apiRequest<AuthResponse['user']>('/auth/profile')
-  },
-
-  /**
-   * Refresh authentication token
-   */
-  async refreshToken(): Promise<AuthResponse> {
-    return apiRequest<AuthResponse>('/auth/refresh', {
-      method: 'POST',
-    })
+  async getProfile(): Promise<User> {
+    const response = await apiRequest<ApiResponse<User>>('/auth/me')
+    if (response.data) {
+      return response.data
+    }
+    throw new Error('Failed to get user profile')
   },
 }
 

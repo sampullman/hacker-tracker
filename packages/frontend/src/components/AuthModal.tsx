@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import Modal from './Modal'
-import api, { ApiError } from '../services/api'
+import { useAuth } from '../hooks/useAuth'
 
 type AuthMode = 'signup' | 'login'
 
@@ -17,6 +17,7 @@ interface FormData {
 }
 
 const AuthModal = ({ isOpen, onClose, initialMode = 'signup' }: AuthModalProps) => {
+  const { login, signup } = useAuth()
   const [mode, setMode] = useState<AuthMode>(initialMode)
   const [formData, setFormData] = useState<FormData>({
     email: '',
@@ -87,14 +88,11 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'signup' }: AuthModalProps) 
     setIsLoading(true)
     
     try {
-      const credentials = { email: formData.email, password: formData.password }
       const response = mode === 'signup' 
-        ? await api.auth.signup(credentials)
-        : await api.auth.signin(credentials)
+        ? await signup(formData.email, formData.password)
+        : await login(formData.email, formData.password)
 
-      if (response.success && response.token) {
-        api.token.setToken(response.token)
-        console.log(`${mode} successful:`, response.user)
+      if (response.success) {
         onClose()
         resetForm()
       } else {
@@ -102,9 +100,8 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'signup' }: AuthModalProps) 
       }
     } catch (error) {
       console.error(`${mode} error:`, error)
-      const apiError = error as ApiError
       setErrors({ 
-        general: apiError.message || `${mode} failed. Please try again.` 
+        general: `${mode} failed. Please try again.` 
       })
     } finally {
       setIsLoading(false)

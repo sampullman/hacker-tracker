@@ -59,7 +59,7 @@ RUN chown -R backend:nodejs /app
 USER backend
 
 # Expose port
-EXPOSE 3001
+EXPOSE 3051
 
 # Start the application
 CMD ["node", "packages/backend/dist/index.js"]

@@ -4,7 +4,7 @@ dotenvConfig();
 
 export const config = {
   server: {
-    port: parseInt(process.env.PORT || "3001", 10),
+    port: parseInt(process.env.PORT || "3051", 10),
     nodeEnv: process.env.NODE_ENV || "development",
   },
   database: {
@@ -21,6 +21,6 @@ export const config = {
     bcryptRounds: parseInt(process.env.BCRYPT_ROUNDS || "12", 10),
   },
   frontend: {
-    url: process.env.FRONTEND_URL || "http://127.0.0.1:5173",
+    url: process.env.FRONTEND_URL || "http://127.0.0.1:3050",
   },
 };

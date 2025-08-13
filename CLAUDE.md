@@ -31,8 +31,8 @@ pnpm run db:reset
 
 ### Development
 - `pnpm run dev` - Start frontend and backend (Docker mode)
-- `pnpm run frontend` - Start only frontend (port 5173)
-- `pnpm run backend` - Start only backend (port 3001)
+- `pnpm run frontend` - Start only frontend (port 3050)
+- `pnpm run backend` - Start only backend (port 3051)
 
 ### Building
 - `pnpm run build` - Build all packages (required before first run)
@@ -100,7 +100,7 @@ Copy `.env.example` to `.env` and adjust:
    - Reset database: `pnpm run db:reset` or local equivalent
    
 4. **Port conflicts**
-   - Frontend: 5173, Backend: 3001, PostgreSQL: 5440 (Docker) or 5432 (local)
+   - Frontend: 3050, Backend: 3051, PostgreSQL: 5440 (Docker) or 5432 (local)
 
 ## Code Style
 

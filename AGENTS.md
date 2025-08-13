@@ -34,8 +34,8 @@ pnpm run frontend & pnpm run backend
 ### Monorepo Structure
 ```
 packages/
-├── frontend/          # React app (port 5173)
-├── backend/           # Express API (port 3001)  
+├── frontend/          # React app (port 3050)
+├── backend/           # Express API (port 3051)  
 ├── shared-types/      # TypeScript interfaces
 ├── migrations/        # Database schema & migrations
 ├── integration-test/  # API integration tests
@@ -171,8 +171,8 @@ DB_PORT=5440
 - Verify entity definitions match migrations
 
 ### Port conflicts
-- Frontend (Vite): 5173
-- Backend (Express): 3001  
+- Frontend (Vite): 3050
+- Backend (Express): 3051  
 - PostgreSQL: 5432 (local) or 5440 (Docker)
 
 ## Code Quality Tools

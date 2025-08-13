@@ -1,15 +1,27 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import AppLayout from "./components/AppLayout";
 import SplashPage from "./components/SplashPage";
 import TrackPage from "./components/TrackPage";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <SplashPage />,
-  },
-  {
-    path: "/track",
-    element: <TrackPage />,
+    element: <AppLayout />,
+    children: [
+      {
+        index: true,
+        element: <SplashPage />,
+      },
+      {
+        path: "track",
+        element: (
+          <ProtectedRoute>
+            <TrackPage />
+          </ProtectedRoute>
+        ),
+      },
+    ],
   },
 ]);
 

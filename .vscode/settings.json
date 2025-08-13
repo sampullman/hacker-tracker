@@ -15,6 +15,7 @@
     "**/dist-export": true,
     "**/Thumbs.db": true,
     "**/node_modules": true,
+    "**/.pnpm-store": true,
     "**/.nx": true
   },
   "[xml]": {

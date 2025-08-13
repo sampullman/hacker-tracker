@@ -55,7 +55,7 @@ Important production settings:
 
 ### Backend API
 
-- **Port**: 3001
+- **Port**: 3051
 - Depends on PostgreSQL and migrations
 - Includes health check endpoint `/health`
 - Automatic restart on failure
@@ -137,7 +137,7 @@ docker-compose up -d --scale backend=3
 docker-compose ps
 
 # Test backend health
-curl http://localhost:3001/health
+curl http://localhost:3051/health
 
 # Check database
 docker-compose exec postgres pg_isready -U postgres
