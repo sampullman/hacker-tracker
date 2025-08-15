@@ -48,5 +48,5 @@
   },
   "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=delegated",
   "workspaceFolder": "/workspace",
-  "postCreateCommand": "sudo /usr/local/bin/init-firewall.sh && sudo /usr/local/bin/start-postgres.sh"
+  "postCreateCommand": "sudo /usr/local/bin/start-postgres.sh && chmod +x ./scripts/setup.sh && ./scripts/setup.sh && /usr/local/bin/install-playwright.sh && sudo /usr/local/bin/init-firewall.sh"
 }
