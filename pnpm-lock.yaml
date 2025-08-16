@@ -32,6 +32,9 @@ importers:
       prettier:
         specifier: ^3.2.5
         version: 3.6.2
+      tsx:
+        specifier: ^4.20.4
+        version: 4.20.4
       typescript:
         specifier: ^5.3.3
         version: 5.9.2
@@ -108,6 +111,25 @@ importers:
       vitest:
         specifier: ^1.1.0
         version: 1.6.1(@types/node@20.19.10)
+
+  packages/backend-test-helper:
+    dependencies:
+      dotenv:
+        specifier: ^16.3.1
+        version: 16.6.1
+      pg-boss:
+        specifier: ^10.1.5
+        version: 10.3.2
+      shared-types:
+        specifier: workspace:*
+        version: link:../shared-types
+    devDependencies:
+      '@types/node':
+        specifier: ^20.10.0
+        version: 20.19.10
+      typescript:
+        specifier: ^5.3.2
+        version: 5.9.2
 
   packages/e2e-test:
     dependencies:
@@ -246,6 +268,28 @@ importers:
       vitest:
         specifier: ^1.1.0
         version: 1.6.1(@types/node@20.19.10)
+
+  packages/jobs:
+    dependencies:
+      dotenv:
+        specifier: ^16.3.1
+        version: 16.6.1
+      pg-boss:
+        specifier: ^10.1.5
+        version: 10.3.2
+      shared-types:
+        specifier: workspace:*
+        version: link:../shared-types
+    devDependencies:
+      '@types/node':
+        specifier: ^20.10.0
+        version: 20.19.10
+      tsx:
+        specifier: ^4.6.2
+        version: 4.20.3
+      typescript:
+        specifier: ^5.3.2
+        version: 5.9.2
 
   packages/migrations:
     dependencies:
@@ -4509,6 +4553,17 @@ packages:
     resolution: {integrity: sha512-KG8UEiEVkR3wGEb4m5yZkVCzigAD+cVEJck2CzYZO37ZGJfctvVptVO192MwrtPhzONn6go8ylnOdMhKqi4nfg==}
     dev: false
 
+  /pg-boss@10.3.2:
+    resolution: {integrity: sha512-yy96jwKekgUW4DVvve5xjvLZlNqVCRayl1wJvBxQeDNhIrblgEG0YnqbcNth4wsehkYWVJND9TeWbqb+cfxJKQ==}
+    engines: {node: '>=20'}
+    dependencies:
+      cron-parser: 4.9.0
+      pg: 8.16.3
+      serialize-error: 8.1.0
+    transitivePeerDependencies:
+      - pg-native
+    dev: false
+
   /pg-boss@9.0.3:
     resolution: {integrity: sha512-cUWUiv3sr563yNy0nCZ25Tv5U0m59Y9MhX/flm0vTR012yeVCrqpfboaZP4xFOQPdWipMJpuu4g94HR0SncTgw==}
     engines: {node: '>=16'}
@@ -5563,6 +5618,17 @@ packages:
 
   /tsx@4.20.3:
     resolution: {integrity: sha512-qjbnuR9Tr+FJOMBqJCW5ehvIo/buZq7vH7qD7JziU98h6l3qGy0a/yPFjwO+y0/T7GFpNgNAvEcPPVfyT8rrPQ==}
+    engines: {node: '>=18.0.0'}
+    hasBin: true
+    dependencies:
+      esbuild: 0.25.8
+      get-tsconfig: 4.10.1
+    optionalDependencies:
+      fsevents: 2.3.3
+    dev: true
+
+  /tsx@4.20.4:
+    resolution: {integrity: sha512-yyxBKfORQ7LuRt/BQKBXrpcq59ZvSW0XxwfjAt3w2/8PmdxaFzijtMhTawprSHhpzeM5BgU2hXHG3lklIERZXg==}
     engines: {node: '>=18.0.0'}
     hasBin: true
     dependencies:

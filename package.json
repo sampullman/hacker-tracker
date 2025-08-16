@@ -8,6 +8,8 @@
     "dev": "pnpm run db:setup && concurrently \"pnpm run frontend\" \"pnpm run backend\"",
     "frontend": "pnpm --filter frontend dev",
     "backend": "pnpm --filter backend dev",
+    "jobs": "pnpm --filter jobs dev",
+    "jobs:start": "pnpm --filter jobs start",
     "build": "pnpm --filter shared-types build && pnpm -r build",
     "test": "pnpm -r test",
     "test:integration": "pnpm --filter integration-test test",
@@ -29,13 +31,14 @@
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "@typescript-eslint/parser": "^6.21.0",
+    "concurrently": "^8.2.2",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "prettier": "^3.2.5",
-    "typescript": "^5.3.3",
-    "concurrently": "^8.2.2"
+    "tsx": "^4.20.4",
+    "typescript": "^5.3.3"
   },
   "packageManager": "pnpm@8.15.1",
   "engines": {

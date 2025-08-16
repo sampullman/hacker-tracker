@@ -1,0 +1,3 @@
+Please set up pg-boss according to best practices. You can install the package and review the built-in documentation. For now, it just needs to be integrated properly into our database, with a placeholder job scheduled to run every 10 minutes that logs something to the console. The job should not run in the backend, but a new package called "jobs".
+
+Please also add a separate package, e.g. "backend-test-helper", that can manually trigger jobs, for testing purposes. In development and CI testing we will run with jobs disabled, and manually trigger them in e2e/integration tests.
