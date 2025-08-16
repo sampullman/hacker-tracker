@@ -9,13 +9,14 @@ Self-hosted app for alerts based on Hacker News posts and comments. Set up "trac
 **Prerequisites:** PostgreSQL must be installed and running locally.
 
 **Quick Setup**
+
 ```bash
 # 1. Install dependencies
 pnpm install
 
 # 2. Setup database (create databases and run migrations)
 # Note: Requires local PostgreSQL instance
-PGPASSWORD=your_password psql -h localhost -p 5432 -U postgres -f scripts/init-db.sql
+PGPASSWORD=password psql -h localhost -p 5440 -U postgres -f scripts/init-db.sql
 pnpm --filter migrations db:setup
 
 # 3. Build shared packages
@@ -26,6 +27,7 @@ pnpm run frontend & pnpm run backend
 ```
 
 **Manual Local Setup**
+
 ```bash
 # Install dependencies
 pnpm install
@@ -34,7 +36,7 @@ pnpm install
 pnpm run build
 
 # Setup local databases (requires PostgreSQL running locally)
-PGPASSWORD=your_password psql -h localhost -p 5432 -U postgres -f scripts/init-db.sql
+PGPASSWORD=password psql -h localhost -p 5440 -U postgres -f scripts/init-db.sql
 
 # Run database migrations
 pnpm --filter migrations db:setup
@@ -46,6 +48,7 @@ pnpm run frontend & pnpm run backend
 ### Docker Environment
 
 **Quick Docker Setup**
+
 ```bash
 # 1. Install dependencies
 pnpm install
@@ -58,6 +61,7 @@ pnpm run dev
 ```
 
 **Manual Docker Setup**
+
 ```bash
 # Install dependencies
 pnpm install
@@ -123,6 +127,7 @@ pnpm run typecheck      # TypeScript type checking
 ## Production Deployment
 
 ### Docker Compose (Recommended)
+
 ```bash
 # Run complete application stack
 docker-compose up -d
@@ -137,11 +142,13 @@ docker-compose down
 ## Configuration
 
 Copy the environment template and customize:
+
 ```bash
 cp .env.example .env
 ```
 
 Key settings:
+
 - `JWT_SECRET`: Change for production (use secure random string)
 - `DB_*`: Database connection settings
 - `BCRYPT_ROUNDS`: Password hashing strength (10-12 for production)
@@ -149,12 +156,14 @@ Key settings:
 ## API Documentation
 
 ### Authentication Endpoints
+
 - `POST /api/auth/register` - Create user account
 - `POST /api/auth/login` - Authenticate user
 - `GET /api/auth/me` - Get current user
 - `POST /api/auth/logout` - Logout user
 
-### User Management (Admin/Self only)  
+### User Management (Admin/Self only)
+
 - `GET /api/users` - List users (admin only)
 - `GET /api/users/:id` - Get user details
 - `PUT /api/users/:id` - Update user

@@ -49,50 +49,34 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }, [])
 
   const login = async (email: string, password: string) => {
-    try {
-      const response = await api.auth.signin({ email, password })
-      
-      if (response.success && response.token && response.user) {
-        api.token.setToken(response.token)
-        setUser(response.user)
-        navigate('/track')
-        return { success: true }
-      }
-      
-      return { 
-        success: false, 
-        message: response.message || 'Login failed' 
-      }
-    } catch (error) {
-      console.error('Login error:', error)
-      return { 
-        success: false, 
-        message: 'An error occurred during login' 
-      }
+    const response = await api.auth.signin({ email, password })
+    
+    if (response.success && response.token && response.user) {
+      api.token.setToken(response.token)
+      setUser(response.user)
+      navigate('/track')
+      return { success: true }
+    }
+    
+    return { 
+      success: false, 
+      message: response.message || 'Login failed' 
     }
   }
 
   const signup = async (email: string, password: string, username?: string) => {
-    try {
-      const response = await api.auth.signup({ email, password, username })
-      
-      if (response.success && response.token && response.user) {
-        api.token.setToken(response.token)
-        setUser(response.user)
-        navigate('/track')
-        return { success: true }
-      }
-      
-      return { 
-        success: false, 
-        message: response.message || 'Signup failed' 
-      }
-    } catch (error) {
-      console.error('Signup error:', error)
-      return { 
-        success: false, 
-        message: 'An error occurred during signup' 
-      }
+    const response = await api.auth.signup({ email, password, username })
+    
+    if (response.success && response.token && response.user) {
+      api.token.setToken(response.token)
+      setUser(response.user)
+      navigate('/track')
+      return { success: true }
+    }
+    
+    return { 
+      success: false, 
+      message: response.message || 'Signup failed' 
     }
   }
 

@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   postgres:
@@ -21,7 +21,6 @@ services:
       retries: 5
     networks:
       - hacker-tracker-dev
-
 
 volumes:
   postgres_dev_data:

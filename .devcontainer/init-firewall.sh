@@ -39,8 +39,6 @@ iptables -A OUTPUT -o lo -j ACCEPT
 
 # Create ipset with CIDR support
 ipset create allowed-domains hash:net
-ipset create allowed-domains-v4 hash:ip family inet  -exist
-ipset create allowed-domains-v6 hash:ip family inet6 -exist
 
 # Fetch GitHub meta information and aggregate + add their IP ranges
 echo "Fetching GitHub IP ranges..."
@@ -65,84 +63,25 @@ while read -r cidr; do
     ipset add allowed-domains "$cidr"
 done < <(echo "$gh_ranges" | jq -r '(.web + .api + .git)[]' | aggregate -q)
 
-is_ipv4() { [[ "$1" =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]]; }
-is_ipv6() { [[ "$1" =~ ^[0-9A-Fa-f:]+$ ]]; }
-
-# Resolve a hostname to IPs, following up to MAX_CNAME_DEPTH CNAME "redirects"
-resolve_ips() {
-  local name="$1"
-  local MAX_CNAME_DEPTH="${2:-5}"
-  local depth=0
-  local seen=()
-
-  while (( depth <= MAX_CNAME_DEPTH )); do
-    # Try A / AAAA directly
-    local a aaaa
-    a=$(dig +short A    "$name" 2>/dev/null | grep -E '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$' || true)
-    aaaa=$(dig +short AAAA "$name" 2>/dev/null | grep -E '^[0-9A-Fa-f:]+$' || true)
-
-    if [[ -n "$a$aaaa" ]]; then
-      # Output one IP per line (both families)
-      [[ -n "$a"    ]] && echo "$a"
-      [[ -n "$aaaa" ]] && echo "$aaaa"
-      return 0
+# Resolve and add other allowed domains
+for domain in \
+    "registry.npmjs.org" \
+    "api.anthropic.com" ; do
+    echo "Resolving $domain..."
+    ips=$(dig +short A "$domain")
+    if [ -z "$ips" ]; then
+        echo "ERROR: Failed to resolve $domain"
+        exit 1
     fi
-
-    # No A/AAAA yet — try to follow CNAME
-    local cname
-    cname=$(dig +short CNAME "$name" 2>/dev/null | sed 's/\.$//' | head -n1 || true)
-    if [[ -z "$cname" ]]; then
-      echo "ERROR: No A/AAAA or CNAME for $name" >&2
-      return 1
-    fi
-
-    # Detect loops
-    for s in "${seen[@]}"; do
-      if [[ "$s" == "$cname" ]]; then
-        echo "ERROR: CNAME loop detected at $cname" >&2
-        return 1
-      fi
-    done
-    seen+=("$name")
-    echo "  CNAME: $name -> $cname"
-    name="$cname"
-    ((depth++))
-  done
-
-  echo "ERROR: Exceeded CNAME depth while resolving $1" >&2
-  return 1
-}
-
-# Your allowlist
-domains=(
-  "registry.npmjs.org"
-  "deb.debian.org"
-  "cdn.playwright.dev"
-  "api.anthropic.com"
-)
-
-for domain in "${domains[@]}"; do
-  echo "Resolving $domain..."
-  # Collect IPs (chasing CNAMEs) and unique them
-  mapfile -t ips < <(resolve_ips "$domain" 5 | awk 'NF' | sort -u)
-
-  if (( ${#ips[@]} == 0 )); then
-    echo "ERROR: Failed to resolve any IPs for $domain"
-    exit 1
-  fi
-
-  for ip in "${ips[@]}"; do
-    if is_ipv4 "$ip"; then
-      echo "Adding IPv4 $ip for $domain"
-      ipset add allowed-domains-v4 "$ip" -exist
-    elif is_ipv6 "$ip"; then
-      echo "Adding IPv6 $ip for $domain"
-      ipset add allowed-domains-v6 "$ip" -exist
-    else
-      # Ignore any non-IP stray output just in case
-      echo "Skipping non-IP from DNS for $domain: $ip"
-    fi
-  done
+    
+    while read -r ip; do
+        if [[ ! "$ip" =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
+            echo "ERROR: Invalid IP from DNS for $domain: $ip"
+            exit 1
+        fi
+        echo "Adding $ip for $domain"
+        ipset add allowed-domains "$ip"
+    done < <(echo "$ips")
 done
 
 # Get host IP from default route

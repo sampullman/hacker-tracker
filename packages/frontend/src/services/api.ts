@@ -60,27 +60,34 @@ export const authApi = {
    * Sign up a new user
    */
   async signup(userData: { email: string; password: string; username?: string }): Promise<{ success: boolean; user?: User; token?: string; message?: string }> {
-    const requestData: CreateUserRequest = {
-      email: userData.email,
-      username: userData.username || userData.email.split('@')[0],
-      password: userData.password
-    }
-    
-    const response = await apiRequest<ApiResponse<AuthResponse>>('/auth/register', {
-      method: 'POST',
-      body: JSON.stringify(requestData),
-    })
-
-    if (response.data) {
-      return {
-        success: true,
-        user: response.data.user,
-        token: response.data.token
+    try {
+      const requestData: CreateUserRequest = {
+        email: userData.email,
+        username: userData.username || userData.email.split('@')[0],
+        password: userData.password
       }
-    } else {
+      
+      const response = await apiRequest<ApiResponse<AuthResponse>>('/auth/register', {
+        method: 'POST',
+        body: JSON.stringify(requestData),
+      })
+
+      if (response.data) {
+        return {
+          success: true,
+          user: response.data.user,
+          token: response.data.token
+        }
+      } else {
+        return {
+          success: false,
+          message: response.error || 'Registration failed'
+        }
+      }
+    } catch (error: any) {
       return {
         success: false,
-        message: response.error || 'Registration failed'
+        message: error.message || 'Registration failed'
       }
     }
   },
@@ -89,21 +96,28 @@ export const authApi = {
    * Sign in an existing user
    */
   async signin(credentials: LoginRequest): Promise<{ success: boolean; user?: User; token?: string; message?: string }> {
-    const response = await apiRequest<ApiResponse<AuthResponse>>('/auth/login', {
-      method: 'POST',
-      body: JSON.stringify(credentials),
-    })
+    try {
+      const response = await apiRequest<ApiResponse<AuthResponse>>('/auth/login', {
+        method: 'POST',
+        body: JSON.stringify(credentials),
+      })
 
-    if (response.data) {
-      return {
-        success: true,
-        user: response.data.user,
-        token: response.data.token
+      if (response.data) {
+        return {
+          success: true,
+          user: response.data.user,
+          token: response.data.token
+        }
+      } else {
+        return {
+          success: false,
+          message: response.error || 'Login failed'
+        }
       }
-    } else {
+    } catch (error: any) {
       return {
         success: false,
-        message: response.error || 'Login failed'
+        message: error.message || 'Login failed'
       }
     }
   },

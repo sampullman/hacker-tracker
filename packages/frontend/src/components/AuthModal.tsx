@@ -144,7 +144,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'signup' }: AuthModalProps) 
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4" noValidate>
           {errors.general && (
             <div className="bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-lg text-sm">
               {errors.general}
