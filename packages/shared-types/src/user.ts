@@ -27,4 +27,10 @@ export interface LoginRequest {
 export interface AuthResponse {
   user: Omit<User, 'passwordHash'>;
   token: string;
+  requiresEmailConfirmation?: boolean;
+}
+
+export interface EmailConfirmationRequest {
+  userId: string;
+  code: string;
 }

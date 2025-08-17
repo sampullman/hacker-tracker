@@ -2,13 +2,33 @@ import { Router } from 'express';
 import type { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import PgBoss from 'pg-boss';
 import type { CreateUserRequest, LoginRequest, AuthResponse, ApiResponse, User } from 'shared-types';
 import { config } from '../config/index.js';
 import { getDataSource } from '../database/index.js';
 import { UserEntity, UserRole } from '../database/entities/User.js';
+import { EmailConfirmationEntity } from '../database/entities/EmailConfirmation.js';
 import { authenticateToken, type AuthenticatedRequest } from '../middleware/auth.js';
+import { EmailConfirmationService } from '../services/email-confirmation.js';
+import { getDatabaseUrl } from 'shared-backend/config';
 
 const router = Router();
+
+// Initialize pg-boss for job queueing
+let pgBoss: PgBoss | null = null;
+
+async function getPgBoss(): Promise<PgBoss> {
+  if (!pgBoss) {
+    pgBoss = new PgBoss({
+      connectionString: getDatabaseUrl(),
+      // We only need to send jobs, not process them
+      noSupervisor: true,
+      noScheduling: true,
+    } as any);
+    await pgBoss.start();
+  }
+  return pgBoss;
+}
 
 router.post('/register', async (req: Request<{}, ApiResponse<AuthResponse>, CreateUserRequest>, res: Response<ApiResponse<AuthResponse>>) => {
   try {
@@ -35,16 +55,35 @@ router.post('/register', async (req: Request<{}, ApiResponse<AuthResponse>, Crea
     }
 
     const passwordHash = await bcrypt.hash(password, config.auth.bcryptRounds);
-
-    const user = userRepository.create({
-      email,
-      username,
-      passwordHash,
-      emailConfirmed: false,
-      role: 'user'
+    
+    // Use transaction to ensure atomicity
+    const savedUser = await dataSource.transaction(async (manager) => {
+      // Create user
+      const user = manager.create(UserEntity, {
+        email,
+        username,
+        passwordHash,
+        emailConfirmed: false,
+        role: 'user'
+      });
+      
+      const savedUser = await manager.save(user);
+      
+      // Create confirmation code
+      const code = await EmailConfirmationService.createConfirmationCode(savedUser.id, manager);
+      
+      // Queue email job (this will be committed with the transaction)
+      const boss = await getPgBoss();
+      await EmailConfirmationService.sendConfirmationEmail(
+        savedUser.id,
+        savedUser.email,
+        savedUser.username,
+        code,
+        boss
+      );
+      
+      return savedUser;
     });
-
-    const savedUser = await userRepository.save(user);
 
     const token = jwt.sign(
       { userId: savedUser.id },
@@ -65,7 +104,8 @@ router.post('/register', async (req: Request<{}, ApiResponse<AuthResponse>, Crea
     res.status(201).json({
       data: {
         user: userResponse,
-        token
+        token,
+        requiresEmailConfirmation: true
       }
     });
   } catch (error) {
@@ -118,11 +158,70 @@ router.post('/login', async (req: Request<{}, ApiResponse<AuthResponse>, LoginRe
     res.status(200).json({
       data: {
         user: userResponse,
-        token
+        token,
+        requiresEmailConfirmation: !user.emailConfirmed
       }
     });
   } catch (error) {
     console.error('Login error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+router.post('/confirm-email', async (req: Request<{}, ApiResponse<{ success: boolean }>, { userId: string; code: string }>, res: Response<ApiResponse<{ success: boolean }>>) => {
+  try {
+    const { userId, code } = req.body;
+
+    if (!userId || !code) {
+      return res.status(400).json({ error: 'User ID and confirmation code are required' });
+    }
+
+    const success = await EmailConfirmationService.verifyCode(userId, code);
+
+    if (!success) {
+      return res.status(400).json({ error: 'Invalid or expired confirmation code' });
+    }
+
+    res.status(200).json({
+      data: { success: true }
+    });
+  } catch (error) {
+    console.error('Email confirmation error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+router.post('/resend-confirmation', authenticateToken, async (req: Request, res: Response<ApiResponse<{ success: boolean }>>) => {
+  try {
+    const authReq = req as AuthenticatedRequest;
+    if (!authReq.user) {
+      return res.status(401).json({ error: 'User not found' });
+    }
+
+    if (authReq.user.emailConfirmed) {
+      return res.status(400).json({ error: 'Email already confirmed' });
+    }
+
+    const dataSource = getDataSource();
+    
+    // Create new confirmation code
+    const code = await EmailConfirmationService.createConfirmationCode(authReq.user.id);
+    
+    // Queue email job
+    const boss = await getPgBoss();
+    await EmailConfirmationService.sendConfirmationEmail(
+      authReq.user.id,
+      authReq.user.email,
+      authReq.user.username,
+      code,
+      boss
+    );
+
+    res.status(200).json({
+      data: { success: true }
+    });
+  } catch (error) {
+    console.error('Resend confirmation error:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
@@ -143,5 +242,18 @@ router.get('/me', authenticateToken, async (req: Request, res: Response<ApiRespo
     data: authReq.user
   });
 });
+
+// Test helper endpoint (only in development/test)
+if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
+  router.get('/test/confirmation-code/:userId', async (req: Request<{ userId: string }>, res: Response<ApiResponse<{ code: string | null }>>) => {
+    try {
+      const code = await EmailConfirmationService.getLatestCodeForTesting(req.params.userId);
+      res.status(200).json({ data: { code } });
+    } catch (error) {
+      console.error('Test helper error:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+}
 
 export { router as authRoutes };
