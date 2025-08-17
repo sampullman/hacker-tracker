@@ -49,17 +49,17 @@ export const authenticateToken = async (req: Request, res: Response, next: NextF
 
 export const requireRole = (role: string) => {
   return async (req: Request, res: Response, next: NextFunction) => {
-    // First authenticate the token
-    await new Promise<void>((resolve, reject) => {
-      authenticateToken(req, res, (err) => {
-        if (err) reject(err);
-        else resolve();
-      });
-    }).catch(() => {
-      return; // authenticateToken already sent response
-    });
+    // Authenticate the token first. We pass a no-op `next` handler so
+    // `authenticateToken` doesn't automatically continue the request.
+    await authenticateToken(req, res, () => {});
 
-    // Then check the role
+    // If the token was invalid `authenticateToken` will have already sent
+    // a response. In that case we simply stop further processing to avoid
+    // hanging requests.
+    if (res.headersSent) {
+      return;
+    }
+
     const authReq = req as AuthenticatedRequest;
     if (!authReq.user) {
       return res.status(401).json({ error: 'Access token required' });
