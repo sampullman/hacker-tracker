@@ -2,6 +2,7 @@
   "name": "@app/jobs",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -13,6 +14,7 @@
   "dependencies": {
     "pg-boss": "^10.1.5",
     "shared-types": "workspace:*",
+    "shared-backend": "workspace:*",
     "dotenv": "^16.3.1"
   },
   "devDependencies": {

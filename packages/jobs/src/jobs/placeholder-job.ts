@@ -1,4 +1,4 @@
-import { getBoss } from '../boss';
+import { getBoss } from '../boss.js';
 
 export const PLACEHOLDER_JOB_NAME = 'placeholder-job';
 

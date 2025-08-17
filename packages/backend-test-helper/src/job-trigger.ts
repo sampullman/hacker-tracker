@@ -1,8 +1,5 @@
 import PgBoss from 'pg-boss';
-import * as dotenv from 'dotenv';
-import path from 'path';
-
-dotenv.config({ path: path.resolve(process.cwd(), '.env') });
+import { getDatabaseUrl } from 'shared-backend/config';
 
 export class JobTrigger {
   private boss: PgBoss | null = null;
@@ -10,13 +7,7 @@ export class JobTrigger {
 
   constructor(private connectionString?: string) {
     if (!connectionString) {
-      const host = process.env.DB_HOST || 'localhost';
-      const port = process.env.DB_PORT || '5440';
-      const database = process.env.DB_NAME || 'hacker_tracker';
-      const user = process.env.DB_USER || 'postgres';
-      const password = process.env.DB_PASSWORD || 'password';
-      
-      this.connectionString = `postgres://${user}:${password}@${host}:${port}/${database}`;
+      this.connectionString = getDatabaseUrl();
     }
   }
 

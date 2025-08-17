@@ -1,5 +1,5 @@
 import PgBoss from 'pg-boss';
-import { getDatabaseConnectionString, jobsConfig } from './config';
+import { getDatabaseConnectionString, jobsConfig } from './config.js';
 
 let bossInstance: PgBoss | null = null;
 
@@ -12,7 +12,7 @@ export async function getBoss(): Promise<PgBoss> {
       retryLimit: jobsConfig.retryLimit,
       retryDelay: jobsConfig.retryDelay,
       archiveCompletedAfterSeconds: jobsConfig.archiveCompletedAfterSeconds,
-      deleteAfterDays: jobsConfig.deleteArchivedAfterDays,
+      deleteAfterDays: jobsConfig.deleteAfterDays,
       monitorStateIntervalSeconds: 30,
       maintenanceIntervalSeconds: 120,
     });

@@ -19,7 +19,8 @@
     "typeorm": "^0.3.17",
     "pg": "^8.11.3",
     "dotenv": "^16.3.1",
-    "shared-types": "workspace:*"
+    "shared-types": "workspace:*",
+    "shared-backend": "workspace:*"
   },
   "devDependencies": {
     "@types/pg": "^8.10.9",

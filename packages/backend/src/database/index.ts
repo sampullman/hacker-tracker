@@ -1,45 +1,31 @@
 import { DataSource } from 'typeorm';
-import { config } from '../config/index.js';
+import { DatabaseManager, createDataSource as createSharedDataSource } from 'shared-backend/database';
 import { UserEntity } from './entities/User.js';
 
-let dataSource: DataSource | null = null;
+// Create a singleton database manager for the backend
+const dbManager = new DatabaseManager({
+  entities: [UserEntity],
+  migrations: [],
+  synchronize: false, // Always use migrations in production
+});
 
+// Legacy compatibility functions
 export const createDataSource = () => {
-  return new DataSource({
-    type: 'postgres',
-    host: config.database.host,
-    port: config.database.port,
-    username: config.database.username,
-    password: config.database.password,
-    database: config.database.database,
-    ssl: config.database.ssl ? { rejectUnauthorized: false } : false,
-    synchronize: false, // Always use migrations in production
-    logging: config.server.nodeEnv === 'development',
+  return createSharedDataSource({
     entities: [UserEntity],
     migrations: [],
+    synchronize: false,
   });
 };
 
 export const initializeDatabase = async (): Promise<DataSource> => {
-  if (!dataSource) {
-    dataSource = createDataSource();
-    await dataSource.initialize();
-    console.log('Database connection established');
-  }
-  return dataSource;
+  return dbManager.initialize();
 };
 
 export const getDataSource = (): DataSource => {
-  if (!dataSource) {
-    throw new Error('Database not initialized. Call initializeDatabase() first.');
-  }
-  return dataSource;
+  return dbManager.getDataSource();
 };
 
 export const closeDatabase = async (): Promise<void> => {
-  if (dataSource) {
-    await dataSource.destroy();
-    dataSource = null;
-    console.log('Database connection closed');
-  }
+  return dbManager.close();
 };

@@ -14,7 +14,8 @@
     "bcrypt": "^5.1.1",
     "frontend": "workspace:*",
     "migrations": "workspace:*",
-    "shared-types": "workspace:*"
+    "shared-types": "workspace:*",
+    "shared-backend": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^20.10.5",

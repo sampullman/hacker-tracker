@@ -74,6 +74,9 @@ importers:
       pg-boss:
         specifier: ^9.0.3
         version: 9.0.3
+      shared-backend:
+        specifier: workspace:*
+        version: link:../shared-backend
       shared-types:
         specifier: workspace:*
         version: link:../shared-types
@@ -120,6 +123,9 @@ importers:
       pg-boss:
         specifier: ^10.1.5
         version: 10.3.2
+      shared-backend:
+        specifier: workspace:*
+        version: link:../shared-backend
       shared-types:
         specifier: workspace:*
         version: link:../shared-types
@@ -237,6 +243,9 @@ importers:
       migrations:
         specifier: workspace:*
         version: link:../migrations
+      shared-backend:
+        specifier: workspace:*
+        version: link:../shared-backend
       shared-types:
         specifier: workspace:*
         version: link:../shared-types
@@ -277,6 +286,9 @@ importers:
       pg-boss:
         specifier: ^10.1.5
         version: 10.3.2
+      shared-backend:
+        specifier: workspace:*
+        version: link:../shared-backend
       shared-types:
         specifier: workspace:*
         version: link:../shared-types
@@ -299,6 +311,9 @@ importers:
       pg:
         specifier: ^8.11.3
         version: 8.16.3
+      shared-backend:
+        specifier: workspace:*
+        version: link:../shared-backend
       shared-types:
         specifier: workspace:*
         version: link:../shared-types
@@ -317,6 +332,25 @@ importers:
         version: 10.9.2(@types/node@20.19.10)(typescript@5.9.2)
       typescript:
         specifier: ^5.3.3
+        version: 5.9.2
+
+  packages/shared-backend:
+    dependencies:
+      dotenv:
+        specifier: ^16.3.1
+        version: 16.6.1
+      pg:
+        specifier: ^8.11.3
+        version: 8.16.3
+      typeorm:
+        specifier: ^0.3.17
+        version: 0.3.25(pg@8.16.3)(reflect-metadata@0.2.2)(ts-node@10.9.2)
+    devDependencies:
+      '@types/node':
+        specifier: ^20.10.0
+        version: 20.19.10
+      typescript:
+        specifier: ^5.3.2
         version: 5.9.2
 
   packages/shared-types:

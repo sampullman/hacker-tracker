@@ -1,10 +1,10 @@
-import { startBoss, stopBoss, getBoss } from './boss';
-import { registerAllJobs, scheduleAllJobs } from './jobs';
-import { jobsConfig } from './config';
+import { startBoss, stopBoss, getBoss } from './boss.js';
+import { registerAllJobs, scheduleAllJobs } from './jobs/index.js';
+import { jobsConfig } from './config.js';
 
-export * from './boss';
-export * from './jobs';
-export * from './config';
+export * from './boss.js';
+export * from './jobs/index.js';
+export * from './config.js';
 
 async function main(): Promise<void> {
   if (!jobsConfig.enabled) {
@@ -41,6 +41,7 @@ async function main(): Promise<void> {
   }
 }
 
-if (require.main === module) {
+// Check if this file is being run directly
+if (import.meta.url === `file://${process.argv[1]}`) {
   main().catch(console.error);
 }
