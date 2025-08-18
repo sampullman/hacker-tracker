@@ -152,6 +152,19 @@ Key settings:
 - `DB_*`: Database connection settings
 - `BCRYPT_ROUNDS`: Password hashing strength (10-12 for production)
 
+### Email Service
+
+This project uses [MailerSend](https://www.mailersend.com/) for transactional emails. To set it up:
+
+1.  **Sign up:** Create a free account on the [MailerSend website](https://www.mailersend.com/signup).
+2.  **Verify your domain:** Follow their documentation to add and verify a sending domain. This is required to send emails.
+3.  **Get API Token:** Generate an API token from the MailerSend dashboard under **Domains -> Your Domain -> API**.
+4.  **Configure Environment:** Add the token to your `.env` file:
+
+    ```
+    MAILERSEND_API_KEY=your-api-token-here
+    ```
+
 ## API Documentation
 
 ### Authentication Endpoints
