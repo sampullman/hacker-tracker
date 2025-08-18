@@ -1,6 +1,6 @@
-export * from './job-trigger.js';
+export * from './job-trigger';
 
-import { JobTrigger } from './job-trigger.js';
+import { JobTrigger } from './job-trigger';
 
 let globalJobTrigger: JobTrigger | null = null;
 

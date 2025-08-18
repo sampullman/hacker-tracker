@@ -1,4 +1,4 @@
-import { getBoss } from '../boss.js';
+import { getBoss } from '../boss';
 import { getServerConfig } from 'shared-backend/config';
 
 export const EMAIL_CONFIRMATION_JOB_NAME = 'send-email-confirmation';

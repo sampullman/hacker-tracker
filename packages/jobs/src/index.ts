@@ -1,10 +1,10 @@
-import { startBoss, stopBoss, getBoss } from './boss.js';
-import { registerAllJobs, scheduleAllJobs } from './jobs/index.js';
-import { jobsConfig } from './config.js';
+import { startBoss, stopBoss, getBoss } from './boss';
+import { registerAllJobs, scheduleAllJobs } from './jobs/index';
+import { jobsConfig } from './config';
 
-export * from './boss.js';
-export * from './jobs/index.js';
-export * from './config.js';
+export * from './boss';
+export * from './jobs/index';
+export * from './config';
 
 async function main(): Promise<void> {
   if (!jobsConfig.enabled) {

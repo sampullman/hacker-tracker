@@ -1,8 +1,8 @@
 import passport from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
 import bcrypt from 'bcrypt';
-import { getDataSource } from '../database/index.js';
-import { UserEntity } from '../database/entities/User.js';
+import { getDataSource } from '../database/index';
+import { UserEntity } from '../database/entities/User';
 
 export const configurePassport = () => {
   passport.use(new LocalStrategy(

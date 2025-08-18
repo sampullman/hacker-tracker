@@ -4,12 +4,12 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import PgBoss from 'pg-boss';
 import type { CreateUserRequest, LoginRequest, AuthResponse, ApiResponse, User } from 'shared-types';
-import { config } from '../config/index.js';
-import { getDataSource } from '../database/index.js';
-import { UserEntity, UserRole } from '../database/entities/User.js';
-import { EmailConfirmationEntity } from '../database/entities/EmailConfirmation.js';
-import { authenticateToken, type AuthenticatedRequest } from '../middleware/auth.js';
-import { EmailConfirmationService } from '../services/email-confirmation.js';
+import { config } from '../config/index';
+import { getDataSource } from '../database/index';
+import { UserEntity, UserRole } from '../database/entities/User';
+import { EmailConfirmationEntity } from '../database/entities/EmailConfirmation';
+import { authenticateToken, type AuthenticatedRequest } from '../middleware/auth';
+import { EmailConfirmationService } from '../services/email-confirmation';
 import { getDatabaseUrl } from 'shared-backend/config';
 
 const router = Router();

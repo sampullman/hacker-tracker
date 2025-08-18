@@ -1,9 +1,9 @@
 import jwt from 'jsonwebtoken';
 import type { Request, Response, NextFunction } from 'express';
 import type { User } from 'shared-types';
-import { config } from '../config/index.js';
-import { getDataSource } from '../database/index.js';
-import { UserEntity, UserRole } from '../database/entities/User.js';
+import { config } from '../config/index';
+import { getDataSource } from '../database/index';
+import { UserEntity, UserRole } from '../database/entities/User';
 
 export interface AuthenticatedRequest extends Request {
   user?: User;

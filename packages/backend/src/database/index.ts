@@ -1,7 +1,7 @@
 import { DataSource } from 'typeorm';
 import { DatabaseManager, createDataSource as createSharedDataSource } from 'shared-backend/database';
-import { UserEntity } from './entities/User.js';
-import { EmailConfirmationEntity } from './entities/EmailConfirmation.js';
+import { UserEntity } from './entities/User';
+import { EmailConfirmationEntity } from './entities/EmailConfirmation';
 
 // Create a singleton database manager for the backend
 const dbManager = new DatabaseManager({

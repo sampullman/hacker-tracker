@@ -1,6 +1,6 @@
-import { getDataSource } from '../database/index.js';
-import { EmailConfirmationEntity } from '../database/entities/EmailConfirmation.js';
-import { UserEntity } from '../database/entities/User.js';
+import { getDataSource } from '../database/index';
+import { EmailConfirmationEntity } from '../database/entities/EmailConfirmation';
+import { UserEntity } from '../database/entities/User';
 import PgBoss from 'pg-boss';
 import { getDatabaseUrl, getServerConfig } from 'shared-backend/config';
 

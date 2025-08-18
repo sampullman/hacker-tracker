@@ -7,7 +7,7 @@ import {
   ManyToOne,
   JoinColumn
 } from 'typeorm';
-import { UserEntity } from './User.js';
+import { UserEntity } from './User';
 
 @Entity('email_confirmations')
 @Index(['userId', 'code'])

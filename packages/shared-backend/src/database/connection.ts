@@ -1,5 +1,5 @@
 import { DataSource, DataSourceOptions } from 'typeorm';
-import { getDatabaseConfig, getServerConfig } from '../config/index.js';
+import { getDatabaseConfig, getServerConfig } from '../config/index';
 
 export interface CreateDataSourceOptions {
   entities?: any[];

@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeAll, afterAll, beforeEach } from 'vitest';
 import { DataSource, Repository } from 'typeorm';
-import { UserEntity } from 'migrations/src/entities/User.js';
-import { setupTestDatabase, cleanupTestDatabase, getTestDataSource } from '../src/setup/database.js';
+import { UserEntity } from 'migrations/src/entities/User';
+import { setupTestDatabase, cleanupTestDatabase, getTestDataSource } from '../src/setup/database';
 
 describe('User Entity Integration Tests', () => {
   let dataSource: DataSource;

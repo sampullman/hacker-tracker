@@ -1,6 +1,6 @@
 import { createDataSource } from 'shared-backend/database';
-import { UserEntity } from './entities/User.js';
-import { EmailConfirmationEntity } from './entities/EmailConfirmation.js';
+import { UserEntity } from './entities/User';
+import { EmailConfirmationEntity } from './entities/EmailConfirmation';
 
 const AppDataSource = createDataSource({
   entities: [UserEntity, EmailConfirmationEntity],
