@@ -1,0 +1,87 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: ./.github/actions/setup
+      - name: Run linter
+        run: pnpm run lint
+
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: ./.github/actions/setup
+      - name: Run formatter
+        run: pnpm run format
+
+  unit-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: ./.github/actions/setup
+      - name: Run unit tests
+        run: pnpm test
+
+  integration-test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: hacker_tracker
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: ./.github/actions/setup
+      - name: Run integration tests
+        run: pnpm run test:integration
+        env:
+          DB_HOST: localhost
+          DB_PORT: 5432
+          DB_USERNAME: postgres
+          DB_PASSWORD: password
+          DB_NAME: hacker_tracker
+          JWT_SECRET: test-secret
+
+  e2e-test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: hacker_tracker
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: ./.github/actions/setup
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps
+      - name: Run e2e tests
+        run: pnpm run test:e2e
+        env:
+          DB_HOST: localhost
+          DB_PORT: 5432
+          DB_USERNAME: postgres
+          DB_PASSWORD: password
+          DB_NAME: hacker_tracker
+          JWT_SECRET: test-secret
