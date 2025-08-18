@@ -15,6 +15,7 @@
     "test:integration": "pnpm --filter integration-test test",
     "test:e2e": "pnpm --filter e2e-test test",
     "lint": "pnpm -r lint",
+    "format": "prettier --check .",
     "typecheck": "pnpm --filter shared-types typecheck && pnpm -r typecheck",
     "db:up": "docker compose -f docker-compose.dev.yml up -d postgres",
     "db:down": "docker compose -f docker-compose.dev.yml down",
