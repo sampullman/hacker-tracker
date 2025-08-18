@@ -11,18 +11,17 @@ Self-hosted app for alerts based on Hacker News posts and comments. Set up "trac
 **Quick Setup**
 
 ```bash
-# 1. Install dependencies
-pnpm install
+# Install dependencies and build packages
+pnpm install && pnpm run build
 
-# 2. Setup database (create databases and run migrations)
-# Note: Requires local PostgreSQL instance
-PGPASSWORD=password psql -h localhost -p 5440 -U postgres -f scripts/init-db.sql
+# Initialize database and run migrations (PostgreSQL on port 5440)
+PGPASSWORD=postgres psql -h 127.0.0.1 -p 5440 -U postgres -f scripts/init-db.sql
 pnpm --filter migrations db:setup
 
-# 3. Build shared packages
-pnpm run build
+# Install browsers for Playwright e2e tests
+pnpm exec playwright install
 
-# 4. Start development servers
+# Start development servers
 pnpm run frontend & pnpm run backend
 ```
 
@@ -35,8 +34,8 @@ pnpm install
 # Build shared packages first
 pnpm run build
 
-# Setup local databases (requires PostgreSQL running locally)
-PGPASSWORD=password psql -h localhost -p 5440 -U postgres -f scripts/init-db.sql
+# Setup local database (requires PostgreSQL running locally)
+PGPASSWORD=postgres psql -h localhost -p 5440 -U postgres -f scripts/init-db.sql
 
 # Run database migrations
 pnpm --filter migrations db:setup

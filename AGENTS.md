@@ -28,7 +28,10 @@ pnpm install && pnpm run build
 PGPASSWORD=postgres psql -h localhost -p 5440 -U postgres -f scripts/init-db.sql
 pnpm --filter migrations db:setup
 
-# 3. Start development
+# 3. Install Playwright browsers (for e2e tests)
+pnpm exec playwright install
+
+# 4. Start development
 pnpm run frontend & pnpm run backend
 ```
 
