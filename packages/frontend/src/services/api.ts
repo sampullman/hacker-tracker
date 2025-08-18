@@ -1,4 +1,4 @@
-import type { AuthResponse, CreateUserRequest, LoginRequest, ApiResponse, User, ApiError } from 'shared-types'
+import type { AuthResponse, CreateUserRequest, LoginRequest, ApiResponse, User, ApiError, EmailConfirmationRequest } from 'shared-types'
 
 // API configuration
 const API_BASE_URL = import.meta.env.VITE_API_URL || '/api'
@@ -59,7 +59,7 @@ export const authApi = {
   /**
    * Sign up a new user
    */
-  async signup(userData: { email: string; password: string; username?: string }): Promise<{ success: boolean; user?: User; token?: string; message?: string }> {
+  async signup(userData: { email: string; password: string; username?: string }): Promise<{ success: boolean; user?: User; token?: string; message?: string; requiresEmailConfirmation?: boolean }> {
     try {
       const requestData: CreateUserRequest = {
         email: userData.email,
@@ -76,7 +76,8 @@ export const authApi = {
         return {
           success: true,
           user: response.data.user,
-          token: response.data.token
+          token: response.data.token,
+          requiresEmailConfirmation: response.data.requiresEmailConfirmation
         }
       } else {
         return {
@@ -95,7 +96,7 @@ export const authApi = {
   /**
    * Sign in an existing user
    */
-  async signin(credentials: LoginRequest): Promise<{ success: boolean; user?: User; token?: string; message?: string }> {
+  async signin(credentials: LoginRequest): Promise<{ success: boolean; user?: User; token?: string; message?: string; requiresEmailConfirmation?: boolean }> {
     try {
       const response = await apiRequest<ApiResponse<AuthResponse>>('/auth/login', {
         method: 'POST',
@@ -106,7 +107,8 @@ export const authApi = {
         return {
           success: true,
           user: response.data.user,
-          token: response.data.token
+          token: response.data.token,
+          requiresEmailConfirmation: response.data.requiresEmailConfirmation
         }
       } else {
         return {
@@ -144,6 +146,61 @@ export const authApi = {
       return response.data
     }
     throw new Error('Failed to get user profile')
+  },
+
+  /**
+   * Confirm email address with code
+   */
+  async confirmEmail(data: EmailConfirmationRequest): Promise<{ success: boolean; message?: string }> {
+    try {
+      const response = await apiRequest<ApiResponse<{ success: boolean }>>('/auth/confirm-email', {
+        method: 'POST',
+        body: JSON.stringify(data),
+      })
+
+      if (response.data) {
+        return {
+          success: true
+        }
+      } else {
+        return {
+          success: false,
+          message: response.error || 'Confirmation failed'
+        }
+      }
+    } catch (error: any) {
+      return {
+        success: false,
+        message: error.message || 'Confirmation failed'
+      }
+    }
+  },
+
+  /**
+   * Resend email confirmation code
+   */
+  async resendConfirmation(): Promise<{ success: boolean; message?: string }> {
+    try {
+      const response = await apiRequest<ApiResponse<{ success: boolean }>>('/auth/resend-confirmation', {
+        method: 'POST',
+      })
+
+      if (response.data) {
+        return {
+          success: true
+        }
+      } else {
+        return {
+          success: false,
+          message: response.error || 'Failed to resend confirmation'
+        }
+      }
+    } catch (error: any) {
+      return {
+        success: false,
+        message: error.message || 'Failed to resend confirmation'
+      }
+    }
   },
 }
 

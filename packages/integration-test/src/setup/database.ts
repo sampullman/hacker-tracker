@@ -1,6 +1,6 @@
 import { DataSource } from 'typeorm';
 import { DatabaseManager } from 'shared-backend/database';
-import { UserEntity } from 'migrations/src/entities/User.js';
+import { UserEntity } from 'migrations/src/entities/User';
 
 // Create test database manager
 const testDbManager = new DatabaseManager({

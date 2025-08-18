@@ -1,14 +1,14 @@
 import { describe, it, expect, beforeAll, afterAll, beforeEach } from "vitest";
 import supertest from "supertest";
 import { DataSource, Repository } from "typeorm";
-import { UserEntity } from "migrations/src/entities/User.js";
+import { UserEntity } from "migrations/src/entities/User";
 import {
   setupTestDatabase,
   cleanupTestDatabase,
-} from "../src/setup/database.js";
-import { createApp } from "backend/src/index.js";
+} from "../src/setup/database";
+import { createApp } from "backend/src/index";
 import bcrypt from "bcrypt";
-import TestAgent from "supertest/lib/agent.js";
+import TestAgent from "supertest/lib/agent";
 
 describe("User Routes Integration Tests", () => {
   let app: any;

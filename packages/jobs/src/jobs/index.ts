@@ -1,15 +1,20 @@
-import { getBoss } from '../boss.js';
+import { getBoss } from '../boss';
 import { 
   PLACEHOLDER_JOB_NAME, 
   placeholderJobHandler, 
   schedulePlaceholderJob 
-} from './placeholder-job.js';
+} from './placeholder-job';
+import {
+  registerEmailConfirmationJob
+} from './email-confirmation-job';
 
 export async function registerAllJobs(): Promise<void> {
   const boss = await getBoss();
   
   await boss.work(PLACEHOLDER_JOB_NAME, placeholderJobHandler);
   console.log('[Jobs] Registered handler for:', PLACEHOLDER_JOB_NAME);
+  
+  await registerEmailConfirmationJob();
 }
 
 export async function scheduleAllJobs(): Promise<void> {
@@ -17,4 +22,5 @@ export async function scheduleAllJobs(): Promise<void> {
   console.log('[Jobs] All jobs scheduled');
 }
 
-export * from './placeholder-job.js';
+export * from './placeholder-job';
+export * from './email-confirmation-job';

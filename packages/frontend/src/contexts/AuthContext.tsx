@@ -4,14 +4,23 @@ import { useNavigate } from 'react-router-dom'
 import api from '../services/api'
 import type { User } from 'shared-types'
 
+export interface AuthResponse {
+  success: boolean
+  message?: string
+  userId?: string
+  requiresEmailConfirmation?: boolean
+}
+
 export interface AuthContextType {
   user: User | null
   isAuthenticated: boolean
   isLoading: boolean
-  login: (email: string, password: string) => Promise<{ success: boolean; message?: string }>
-  signup: (email: string, password: string, username?: string) => Promise<{ success: boolean; message?: string }>
+  login: (email: string, password: string) => Promise<AuthResponse>
+  signup: (email: string, username: string, password: string) => Promise<AuthResponse>
   logout: () => Promise<void>
   checkAuth: () => Promise<void>
+  confirmEmail: (userId: string, code: string) => Promise<AuthResponse>
+  resendConfirmation: () => Promise<AuthResponse>
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -48,12 +57,22 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     checkAuth()
   }, [])
 
-  const login = async (email: string, password: string) => {
+  const login = async (email: string, password: string): Promise<AuthResponse> => {
     const response = await api.auth.signin({ email, password })
     
     if (response.success && response.token && response.user) {
       api.token.setToken(response.token)
       setUser(response.user)
+      
+      // Check if email confirmation is required
+      if (response.requiresEmailConfirmation) {
+        return { 
+          success: true, 
+          requiresEmailConfirmation: true,
+          userId: response.user.id
+        }
+      }
+      
       navigate('/track')
       return { success: true }
     }
@@ -64,19 +83,77 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   }
 
-  const signup = async (email: string, password: string, username?: string) => {
+  const signup = async (email: string, username: string, password: string): Promise<AuthResponse> => {
     const response = await api.auth.signup({ email, password, username })
     
     if (response.success && response.token && response.user) {
       api.token.setToken(response.token)
       setUser(response.user)
-      navigate('/track')
-      return { success: true }
+      
+      // Signup always requires email confirmation
+      return { 
+        success: true, 
+        requiresEmailConfirmation: true,
+        userId: response.user.id
+      }
     }
     
     return { 
       success: false, 
       message: response.message || 'Signup failed' 
+    }
+  }
+
+  const confirmEmail = async (userId: string, code: string): Promise<AuthResponse> => {
+    try {
+      const response = await api.auth.confirmEmail({ userId, code })
+      
+      if (response.success) {
+        // Update user's email confirmation status
+        if (user && user.id === userId) {
+          setUser({ ...user, emailConfirmed: true })
+        }
+        
+        // Refresh user data
+        await checkAuth()
+        
+        // Navigate to track page after successful confirmation
+        navigate('/track')
+        
+        return { success: true }
+      }
+      
+      return { 
+        success: false, 
+        message: response.message || 'Invalid or expired code' 
+      }
+    } catch (error) {
+      console.error('Email confirmation error:', error)
+      return { 
+        success: false, 
+        message: 'Failed to confirm email. Please try again.' 
+      }
+    }
+  }
+
+  const resendConfirmation = async (): Promise<AuthResponse> => {
+    try {
+      const response = await api.auth.resendConfirmation()
+      
+      if (response.success) {
+        return { success: true }
+      }
+      
+      return { 
+        success: false, 
+        message: response.message || 'Failed to resend confirmation' 
+      }
+    } catch (error) {
+      console.error('Resend confirmation error:', error)
+      return { 
+        success: false, 
+        message: 'Failed to resend confirmation. Please try again.' 
+      }
     }
   }
 
@@ -99,7 +176,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     login,
     signup,
     logout,
-    checkAuth
+    checkAuth,
+    confirmEmail,
+    resendConfirmation
   }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

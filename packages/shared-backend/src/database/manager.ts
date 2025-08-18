@@ -1,5 +1,5 @@
 import { DataSource } from 'typeorm';
-import { createDataSource, CreateDataSourceOptions } from './connection.js';
+import { createDataSource, CreateDataSourceOptions } from './connection';
 
 export class DatabaseManager {
   private dataSource: DataSource | null = null;

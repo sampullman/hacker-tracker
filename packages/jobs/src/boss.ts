@@ -1,5 +1,5 @@
 import PgBoss from 'pg-boss';
-import { getDatabaseConnectionString, jobsConfig } from './config.js';
+import { getDatabaseConnectionString, jobsConfig } from './config';
 
 let bossInstance: PgBoss | null = null;
 

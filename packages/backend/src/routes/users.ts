@@ -1,9 +1,9 @@
 import { Router } from 'express';
 import type { Request, Response } from 'express';
 import type { User, ApiResponse } from 'shared-types';
-import { getDataSource } from '../database/index.js';
-import { UserEntity, UserRole } from '../database/entities/User.js';
-import { authenticateToken, requireAdmin, type AuthenticatedRequest } from '../middleware/auth.js';
+import { getDataSource } from '../database/index';
+import { UserEntity, UserRole } from '../database/entities/User';
+import { authenticateToken, requireAdmin, type AuthenticatedRequest } from '../middleware/auth';
 
 const router = Router();
 

@@ -2,12 +2,12 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
-import { config } from './config/index.js';
-import { initializeDatabase } from './database/index.js';
-import { authRoutes } from './routes/auth.js';
-import { userRoutes } from './routes/users.js';
-import { trackerRoutes } from './routes/trackers.js';
-import { errorHandler } from './middleware/errorHandler.js';
+import { config } from './config/index';
+import { initializeDatabase } from './database/index';
+import { authRoutes } from './routes/auth';
+import { userRoutes } from './routes/users';
+import { trackerRoutes } from './routes/trackers';
+import { errorHandler } from './middleware/errorHandler';
 
 async function createApp() {
   const app = express();

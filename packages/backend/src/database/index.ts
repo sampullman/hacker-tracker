@@ -1,10 +1,11 @@
 import { DataSource } from 'typeorm';
 import { DatabaseManager, createDataSource as createSharedDataSource } from 'shared-backend/database';
-import { UserEntity } from './entities/User.js';
+import { UserEntity } from './entities/User';
+import { EmailConfirmationEntity } from './entities/EmailConfirmation';
 
 // Create a singleton database manager for the backend
 const dbManager = new DatabaseManager({
-  entities: [UserEntity],
+  entities: [UserEntity, EmailConfirmationEntity],
   migrations: [],
   synchronize: false, // Always use migrations in production
 });
@@ -12,7 +13,7 @@ const dbManager = new DatabaseManager({
 // Legacy compatibility functions
 export const createDataSource = () => {
   return createSharedDataSource({
-    entities: [UserEntity],
+    entities: [UserEntity, EmailConfirmationEntity],
     migrations: [],
     synchronize: false,
   });
